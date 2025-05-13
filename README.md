@@ -1,30 +1,77 @@
-# Dashboard project requirements
+# Finance Dashboard
 
-*Automatically synced with your [v0.dev](https://v0.dev) deployments*
+Um dashboard financeiro com login, filtros dinâmicos, visualizações de dados e design responsivo.
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/lwfes-projects/v0-dashboard-project-requirements)
-[![Built with v0](https://img.shields.io/badge/Built%20with-v0.dev-black?style=for-the-badge)](https://v0.dev/chat/projects/eHa8kMYZl4O)
+## Funcionalidades
 
-## Overview
+- Página de login e dashboard protegida
+- Sidebar exclusiva para a página da dashboard
+- Filtros globais e dinâmicos (data, conta, indústria, estado)
+- Cards resumindo receitas, despesas, transações pendentes e saldo total
+- Gráficos de barras empilhadas e linhas para visualização de transações
+- Tabela de transações com paginação
+- Persistência de sessão e filtros sem banco de dados (usando cookies)
+- Design responsivo e interativo
 
-This repository will stay in sync with your deployed chats on [v0.dev](https://v0.dev).
-Any changes you make to your deployed app will be automatically pushed to this repository from [v0.dev](https://v0.dev).
+## Tecnologias Utilizadas
 
-## Deployment
+- Next.js 14 (App Router)
+- TypeScript
+- Styled Components
+- Context API para gerenciamento de estado
+- Recharts para visualização de dados
+- Cookies para persistência de sessão e filtros
+- Lucide React para ícones
 
-Your project is live at:
+## Instalação
 
-**[https://vercel.com/lwfes-projects/v0-dashboard-project-requirements](https://vercel.com/lwfes-projects/v0-dashboard-project-requirements)**
+1. Clone o repositório:
+\`\`\`bash
+git clone https://github.com/seu-usuario/finance-dashboard.git
+cd finance-dashboard
+\`\`\`
 
-## Build your app
+2. Instale as dependências:
+\`\`\`bash
+npm install
+# ou
+yarn install
+# ou
+pnpm install
+\`\`\`
 
-Continue building your app on:
+3. Execute o servidor de desenvolvimento:
+\`\`\`bash
+npm run dev
+# ou
+yarn dev
+# ou
+pnpm dev
+\`\`\`
 
-**[https://v0.dev/chat/projects/eHa8kMYZl4O](https://v0.dev/chat/projects/eHa8kMYZl4O)**
+4. Abra [http://localhost:3000](http://localhost:3000) no seu navegador para ver o resultado.
 
-## How It Works
+## Estrutura do Projeto
 
-1. Create and modify your project using [v0.dev](https://v0.dev)
-2. Deploy your chats from the v0 interface
-3. Changes are automatically pushed to this repository
-4. Vercel deploys the latest version from this repository
+- `/app` - Rotas e páginas da aplicação (Next.js App Router)
+- `/components` - Componentes reutilizáveis
+- `/contexts` - Contextos para gerenciamento de estado (Auth e Filter)
+- `/data` - Dados mockados para demonstração
+- `/lib` - Utilitários e configurações
+- `/styles` - Estilos globais
+- `/types` - Definições de tipos TypeScript
+- `/utils` - Funções utilitárias
+
+## Uso
+
+1. Faça login com qualquer email e senha (autenticação simulada para demonstração)
+2. Explore o dashboard com os diferentes filtros
+3. Visualize os dados nos gráficos e tabelas
+4. Os filtros e a sessão são persistidos entre recarregamentos da página
+
+## Observações
+
+- Este projeto utiliza dados mockados para demonstração
+- A autenticação é simulada e aceita qualquer email/senha
+- Em um ambiente de produção, você conectaria a uma API real e implementaria autenticação segura
+- Os filtros e a sessão são persistidos usando cookies do navegador
