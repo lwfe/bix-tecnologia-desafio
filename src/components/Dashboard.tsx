@@ -1,0 +1,88 @@
+"use client";
+import { useState, useEffect } from "react";
+import styled from "styled-components";
+import Sidebar from "./Sidebar";
+import FilterBar from "./FilterBar";
+import SummaryCards from "./SummaryCards";
+import TransactionCharts from "./TransactionCharts";
+import TransactionTable from "./TransactionTable";
+import { useFilter } from "@/contexts/FilterContext";
+import { filterTransactions } from "@/utils/filterUtils";
+import type { Transaction } from "@/types";
+import { mockTransactions } from "@/data/mockData";
+
+const DashboardContainer = styled.div`
+  display: flex;
+  min-height: 100vh;
+`;
+
+const MainContent = styled.main`
+  flex: 1;
+  padding: 1.5rem;
+  background-color: #f9fafb;
+  overflow-y: auto;
+  margin-left: 250px;
+
+  @media (max-width: 768px) {
+    margin-left: 0;
+    padding: 1rem;
+  }
+`;
+
+const DashboardHeader = styled.div`
+  margin-bottom: 1.5rem;
+`;
+
+const Title = styled.h1`
+  font-size: 1.5rem;
+  color: #111827;
+  margin-bottom: 0.5rem;
+
+  @media (max-width: 768px) {
+    font-size: 1.25rem;
+  }
+`;
+
+const Subtitle = styled.p`
+  color: #6b7280;
+  font-size: 0.875rem;
+`;
+
+const ContentGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+`;
+
+export default function Dashboard() {
+  const { filters } = useFilter();
+  const [filteredTransactions, setFilteredTransactions] = useState<
+    Transaction[]
+  >([]);
+
+  useEffect(() => {
+    const filtered = filterTransactions(mockTransactions, filters);
+    setFilteredTransactions(filtered);
+  }, [filters]);
+
+  return (
+    <DashboardContainer>
+      <Sidebar />
+      <MainContent>
+        <DashboardHeader>
+          <Title>Dashboard Financeiro</Title>
+          <Subtitle>Visualize e analise suas finanças</Subtitle>
+        </DashboardHeader>
+
+        <FilterBar />
+
+        <ContentGrid>
+          <SummaryCards transactions={filteredTransactions} />
+          <TransactionCharts transactions={filteredTransactions} />
+          <TransactionTable transactions={filteredTransactions} />
+        </ContentGrid>
+      </MainContent>
+    </DashboardContainer>
+  );
+}
