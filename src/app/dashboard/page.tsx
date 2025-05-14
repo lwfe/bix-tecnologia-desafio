@@ -8,7 +8,7 @@ import { Transaction } from "@/types";
 import { mockTransactions } from "@/data/mockData";
 
 import { Sidebar } from "@/components/sidebar";
-import FilterBar from "@/components/FilterBar";
+import { FilterBar } from "@/components/filter-bar";
 import SummaryCards from "@/components/SummaryCards";
 import TransactionTable from "@/components/TransactionTable";
 import TransactionCharts from "@/components/TransactionCharts";
