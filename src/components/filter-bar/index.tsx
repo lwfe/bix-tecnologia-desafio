@@ -3,7 +3,7 @@ import type React from "react";
 import { useState, useEffect } from "react";
 
 import { Filter } from "lucide-react";
-import { useFilter } from "@/contexts/FilterContext";
+import { useFilter } from "@/contexts/filter-context";
 import { mockAccounts, mockIndustries, mockStates } from "@/data/mockData";
 
 import {

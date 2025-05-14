@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { X, Menu, Laptop, LogOut, LayoutDashboard } from "lucide-react";
 
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/contexts/auth-context";
 
 import {
   CloseButton,

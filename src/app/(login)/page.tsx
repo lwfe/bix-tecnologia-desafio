@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/contexts/auth-context";
 import {
   Button,
   ErrorMessage,
@@ -38,7 +38,7 @@ export default function LoginPage() {
   return (
     <LoginContainer>
       <LoginCard>
-        <Title>Finance Dashboard</Title>
+        <Title>BixTecnologia</Title>
         <Form onSubmit={handleSubmit}>
           <InputGroup>
             <Label htmlFor="email">Email</Label>

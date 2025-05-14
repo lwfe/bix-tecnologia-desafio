@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 
-import { useFilter } from "@/contexts/FilterContext";
+import { useFilter } from "@/contexts/filter-context";
 import { filterTransactions } from "@/utils/filterUtils";
 
 import { Transaction } from "@/types";
@@ -9,9 +9,9 @@ import { mockTransactions } from "@/data/mockData";
 
 import { Sidebar } from "@/components/sidebar";
 import { FilterBar } from "@/components/filter-bar";
-import SummaryCards from "@/components/SummaryCards";
-import TransactionTable from "@/components/TransactionTable";
-import TransactionCharts from "@/components/TransactionCharts";
+import { SummaryCards } from "@/components/summary-cards";
+import { TransactionTable } from "@/components/transaction-table";
+import { TransactionCharts } from "@/components/transaction-charts";
 
 import {
   ContentGrid,
