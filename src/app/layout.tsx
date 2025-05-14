@@ -6,9 +6,8 @@ import { Providers } from "./providers";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Finance Dashboard",
+  title: "Dashboard - BixTecnologia",
   description: "Dashboard financeiro com filtros dinâmicos e visualizações",
-  generator: "v0.dev",
 };
 
 export default function RootLayout({

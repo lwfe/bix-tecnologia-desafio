@@ -1,10 +1,14 @@
 "use client";
+
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
-import LoginPage from "@/components/LoginPage";
 
-export default function Home() {
+export default function LoginPageLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   const { isAuthenticated } = useAuth();
   const router = useRouter();
 
@@ -14,5 +18,5 @@ export default function Home() {
     }
   }, [isAuthenticated, router]);
 
-  return <LoginPage />;
+  return <>{children}</>;
 }
