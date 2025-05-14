@@ -1,18 +1,4 @@
-"use client";
-import { useState } from "react";
 import styled from "styled-components";
-import Link from "next/link";
-import { useAuth } from "@/contexts/AuthContext";
-import {
-  Home,
-  LogOut,
-  Menu,
-  X,
-  BarChart2,
-  CreditCard,
-  Users,
-  Settings,
-} from "lucide-react";
 
 const SidebarContainer = styled.aside<{ isOpen: boolean }>`
   background-color: #1e293b;
@@ -168,82 +154,20 @@ const Overlay = styled.div<{ isOpen: boolean }>`
   }
 `;
 
-export default function Sidebar() {
-  const [isOpen, setIsOpen] = useState(false);
-  const { user, logout } = useAuth();
-
-  const toggleSidebar = () => {
-    setIsOpen(!isOpen);
-  };
-
-  const closeSidebar = () => {
-    setIsOpen(false);
-  };
-
-  const handleLogout = () => {
-    logout();
-  };
-
-  const userInitial = user?.email ? user.email[0].toUpperCase() : "U";
-
-  return (
-    <>
-      <SidebarContainer isOpen={isOpen}>
-        <SidebarHeader>
-          <Logo>
-            <BarChart2 size={20} />
-            Finance Dashboard
-          </Logo>
-          <CloseButton onClick={closeSidebar}>
-            <X size={20} />
-          </CloseButton>
-        </SidebarHeader>
-
-        <SidebarContent>
-          <Link href="/dashboard" onClick={closeSidebar}>
-            <NavItem isActive={true}>
-              <Home size={18} />
-              <NavText>Dashboard</NavText>
-            </NavItem>
-          </Link>
-
-          <NavItem>
-            <CreditCard size={18} />
-            <NavText>Transações</NavText>
-          </NavItem>
-
-          <NavItem>
-            <Users size={18} />
-            <NavText>Contas</NavText>
-          </NavItem>
-
-          <NavItem>
-            <Settings size={18} />
-            <NavText>Configurações</NavText>
-          </NavItem>
-
-          <NavItem onClick={handleLogout}>
-            <LogOut size={18} />
-            <NavText>Sair</NavText>
-          </NavItem>
-        </SidebarContent>
-
-        <SidebarFooter>
-          <UserInfo>
-            <UserAvatar>{userInitial}</UserAvatar>
-            <UserDetails>
-              <UserName>Usuário</UserName>
-              <UserEmail>{user?.email}</UserEmail>
-            </UserDetails>
-          </UserInfo>
-        </SidebarFooter>
-      </SidebarContainer>
-
-      <MobileMenuButton onClick={toggleSidebar}>
-        <Menu size={20} />
-      </MobileMenuButton>
-
-      <Overlay isOpen={isOpen} onClick={closeSidebar} />
-    </>
-  );
-}
+export {
+  SidebarContainer,
+  SidebarHeader,
+  Logo,
+  CloseButton,
+  SidebarContent,
+  NavItem,
+  NavText,
+  SidebarFooter,
+  UserInfo,
+  UserAvatar,
+  UserDetails,
+  UserName,
+  UserEmail,
+  MobileMenuButton,
+  Overlay,
+};
