@@ -54,7 +54,7 @@ const Select = styled.select`
 
   &:focus {
     outline: none;
-    border-color: #4f46e5;
+    border-color: #0033cc;
     box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
   }
 `;
@@ -67,7 +67,7 @@ const DateInput = styled.input`
 
   &:focus {
     outline: none;
-    border-color: #4f46e5;
+    border-color: #0033cc;
     box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
   }
 `;
@@ -89,7 +89,7 @@ const Button = styled.button`
 `;
 
 const ApplyButton = styled(Button)`
-  background-color: #4f46e5;
+  background-color: #0033cc;
   color: white;
   border: none;
 

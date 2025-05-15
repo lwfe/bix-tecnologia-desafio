@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 
 import { Filter } from "lucide-react";
 import { useFilter } from "@/contexts/filter-context";
-import { mockAccounts, mockIndustries, mockStates } from "@/data/mockData";
 
 import {
   ApplyButton,
@@ -23,6 +22,24 @@ import {
 export function FilterBar() {
   const { filters, setFilters } = useFilter();
   const [localFilters, setLocalFilters] = useState(filters);
+
+  const [states, setStates] = useState<string[]>([]);
+  const [accounts, setAccounts] = useState<string[]>([]);
+  const [industries, setIndustries] = useState<string[]>([]);
+
+  useEffect(() => {
+    Promise.all([
+      fetch("/api/states")
+        .then((res) => res.json())
+        .then((data) => setStates(data)),
+      fetch("/api/accounts")
+        .then((res) => res.json())
+        .then((data) => setAccounts(data)),
+      fetch("/api/industries")
+        .then((res) => res.json())
+        .then((data) => setIndustries(data)),
+    ]);
+  }, []);
 
   useEffect(() => {
     setLocalFilters(filters);
@@ -95,9 +112,9 @@ export function FilterBar() {
             onChange={handleChange}
           >
             <option value="">Todas as contas</option>
-            {mockAccounts.map((account) => (
-              <option key={account.id} value={account.id}>
-                {account.name}
+            {accounts.map((account) => (
+              <option key={account} value={account}>
+                {account}
               </option>
             ))}
           </Select>
@@ -112,7 +129,7 @@ export function FilterBar() {
             onChange={handleChange}
           >
             <option value="">Todas as indústrias</option>
-            {mockIndustries.map((industry) => (
+            {industries.map((industry) => (
               <option key={industry} value={industry}>
                 {industry}
               </option>
@@ -129,7 +146,7 @@ export function FilterBar() {
             onChange={handleChange}
           >
             <option value="">Todos os estados</option>
-            {mockStates.map((state) => (
+            {states.map((state) => (
               <option key={state} value={state}>
                 {state}
               </option>

@@ -1,31 +1,39 @@
 export interface Transaction {
-  id: string
-  description: string
-  amount: number
-  type: "income" | "expense"
-  category: string
-  date: string
-  status: "completed" | "pending" | "cancelled"
-  account: string
-  industry: string
-  state: string
-}
-
-export interface Account {
-  id: string
-  name: string
+  date: number;
+  amount: number;
+  transaction_type: string;
+  currency: string;
+  account: string;
+  industry: string;
+  state: string;
 }
 
 export interface ChartDataPoint {
-  name: string
-  income: number
-  expense: number
-  balance?: number
+  name: string;
+  income: number;
+  expense: number;
+  balance?: number;
 }
 
 export interface MonthlyDataPoint {
-  month: string
-  income: number
-  expense: number
-  balance: number
+  month: string;
+  income: number;
+  expense: number;
+  balance: number;
+}
+
+export interface Summary {
+  totalIncome: number;
+  totalExpense: number;
+  totalAmount: number;
+  groupedByState: {
+    name: string;
+    deposit: number;
+    withdraw: number;
+  }[];
+  groupedByDate: {
+    name: string;
+    deposit: number;
+    withdraw: number;
+  }[];
 }

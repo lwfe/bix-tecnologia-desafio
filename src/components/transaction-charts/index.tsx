@@ -14,13 +14,13 @@ import {
   Line,
 } from "recharts";
 
-import type { Transaction } from "@/types";
+import type { Summary, Transaction } from "@/types";
 
 import { formatCurrency } from "@/utils/formatters";
 import {
   groupTransactionsByMonth,
   groupTransactionsByCategory,
-} from "@/utils/chartUtils";
+} from "@/utils/chart-utils";
 
 import {
   ChartButton,
@@ -33,32 +33,34 @@ import {
 } from "./styles";
 
 interface TransactionChartsProps {
-  transactions: Transaction[];
+  stateData: Summary["groupedByState"];
+  dateData: Summary["groupedByDate"];
 }
 
-export function TransactionCharts({ transactions }: TransactionChartsProps) {
+export function TransactionCharts({
+  dateData,
+  stateData,
+}: TransactionChartsProps) {
   const [timeRange, setTimeRange] = useState<"3m" | "6m" | "1y">("6m");
-  const categoryData = groupTransactionsByCategory(transactions);
-  const monthlyData = groupTransactionsByMonth(transactions, timeRange);
 
   return (
     <ChartsContainer>
       <ChartCard>
         <ChartHeader>
-          <ChartTitle>Transações por Categoria</ChartTitle>
+          <ChartTitle>Transações por Estado</ChartTitle>
         </ChartHeader>
         <ChartContent>
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
-              data={categoryData}
+              data={stateData}
               margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
             >
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" />
-              <YAxis tickFormatter={(value) => `R$${value / 1000}k`} />
+              <YAxis tickFormatter={(value) => `R$${value * 1000}k`} />
               <Tooltip
-                formatter={(value) => formatCurrency(Number(value))}
-                labelFormatter={(label) => `Categoria: ${label}`}
+                formatter={(value) => formatCurrency(Number(value / 1000))}
+                labelFormatter={(label) => `Estado: ${label}`}
               />
               <Legend />
               <Bar
@@ -105,7 +107,7 @@ export function TransactionCharts({ transactions }: TransactionChartsProps) {
         <ChartContent>
           <ResponsiveContainer width="100%" height="100%">
             <LineChart
-              data={monthlyData}
+              data={dateData}
               margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
             >
               <CartesianGrid strokeDasharray="3 3" />
@@ -133,7 +135,7 @@ export function TransactionCharts({ transactions }: TransactionChartsProps) {
                 type="monotone"
                 dataKey="balance"
                 name="Saldo"
-                stroke="#4f46e5"
+                stroke="#0033CC"
                 strokeWidth={2}
               />
             </LineChart>

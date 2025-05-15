@@ -68,7 +68,7 @@ const NavItem = styled.div<{ isActive?: boolean }>`
     `
     background-color: rgba(255, 255, 255, 0.1);
     color: white;
-    border-left: 3px solid #4f46e5;
+    border-left: 3px solid #0033CC;
   `}
 `;
 
@@ -94,7 +94,7 @@ const UserAvatar = styled.div`
   width: 2.5rem;
   height: 2.5rem;
   border-radius: 50%;
-  background-color: #4f46e5;
+  background-color: #0033cc;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -120,7 +120,7 @@ const MobileMenuButton = styled.button`
   position: fixed;
   bottom: 1.5rem;
   right: 1.5rem;
-  background-color: #4f46e5;
+  background-color: #0033cc;
   color: white;
   width: 3rem;
   height: 3rem;

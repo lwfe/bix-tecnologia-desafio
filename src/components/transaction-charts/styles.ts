@@ -39,9 +39,9 @@ const ChartControls = styled.div`
 `;
 
 const ChartButton = styled.button<{ active?: boolean }>`
-  background-color: ${(props) => (props.active ? "#4f46e5" : "white")};
+  background-color: ${(props) => (props.active ? "#0033CC" : "white")};
   color: ${(props) => (props.active ? "white" : "#6b7280")};
-  border: 1px solid ${(props) => (props.active ? "#4f46e5" : "#e5e7eb")};
+  border: 1px solid ${(props) => (props.active ? "#0033CC" : "#e5e7eb")};
   border-radius: 4px;
   padding: 0.25rem 0.5rem;
   font-size: 0.75rem;

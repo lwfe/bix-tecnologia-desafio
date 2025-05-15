@@ -2,10 +2,8 @@
 import { useEffect, useState } from "react";
 
 import { useFilter } from "@/contexts/filter-context";
-import { filterTransactions } from "@/utils/filterUtils";
 
-import { Transaction } from "@/types";
-import { mockTransactions } from "@/data/mockData";
+import { Summary, Transaction } from "@/types";
 
 import { Sidebar } from "@/components/sidebar";
 import { FilterBar } from "@/components/filter-bar";
@@ -27,10 +25,15 @@ export default function DashboardPage() {
   const [filteredTransactions, setFilteredTransactions] = useState<
     Transaction[]
   >([]);
+  const [summary, setSummary] = useState<Summary | null>(null);
 
   useEffect(() => {
-    const filtered = filterTransactions(mockTransactions, filters);
-    setFilteredTransactions(filtered);
+    fetch("/api/transactions")
+      .then((res) => res.json())
+      .then((data) => setFilteredTransactions(data.data));
+    fetch("/api/summary")
+      .then((res) => res.json())
+      .then((data) => setSummary(data));
   }, [filters]);
 
   return (
@@ -45,8 +48,14 @@ export default function DashboardPage() {
         <FilterBar />
 
         <ContentGrid>
-          <SummaryCards transactions={filteredTransactions} />
-          <TransactionCharts transactions={filteredTransactions} />
+          <SummaryCards
+            totalIncome={summary?.totalIncome || 0}
+            totalExpense={summary?.totalExpense || 0}
+          />
+          <TransactionCharts
+            dateData={summary?.groupedByDate || []}
+            stateData={summary?.groupedByState || []}
+          />
           <TransactionTable transactions={filteredTransactions} />
         </ContentGrid>
       </MainContent>
