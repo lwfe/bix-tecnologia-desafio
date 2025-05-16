@@ -1,4 +1,4 @@
-import fs from "fs";
+import { promises as fs } from "fs";
 import path from "path";
 import { Transaction } from "@/types";
 import { NextRequest } from "next/server";
@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
   const filePath = path.join(process.cwd(), "mocks", "transactions.json");
 
   try {
-    const rawData = fs.readFileSync(filePath, "utf-8");
+    const rawData = await fs.readFile(filePath, "utf-8");
     const allData: Transaction[] = JSON.parse(rawData);
 
     const startDateParam = filters.get("startDate");
@@ -22,118 +22,78 @@ export async function GET(request: NextRequest) {
       : null;
     const endDate = endDateParam ? new Date(endDateParam).getTime() : null;
 
-    let filteredData = allData.filter((transaction) => {
+    const filteredData = allData.filter((transaction) => {
       const transactionDate = new Date(transaction.date).getTime();
 
-      const matchesDateRange =
-        (!startDate || transactionDate >= startDate) &&
-        (!endDate || transactionDate <= endDate);
-
-      const matchesAccount = accountFilter
-        ? transaction.account === accountFilter
-        : true;
-
-      const matchesIndustry = industryFilter
-        ? transaction.industry === industryFilter
-        : true;
-
-      const matchesState = stateFilter
-        ? transaction.state === stateFilter
-        : true;
-
       return (
-        matchesDateRange && matchesAccount && matchesIndustry && matchesState
+        (!startDate || transactionDate >= startDate) &&
+        (!endDate || transactionDate <= endDate) &&
+        (!accountFilter || transaction.account === accountFilter) &&
+        (!industryFilter || transaction.industry === industryFilter) &&
+        (!stateFilter || transaction.state === stateFilter)
       );
     });
 
-    const totalIncome = filteredData.reduce(
-      (total: number, transaction: Transaction) => {
-        if (transaction.transaction_type === "deposit") {
-          return total + Number(transaction.amount / 100);
-        }
-        return total;
-      },
-      0
-    );
+    let totalIncome = 0;
+    let totalExpense = 0;
+    const groupedByState: Record<string, any> = {};
+    const groupedByDateMap: Record<string, any> = {};
 
-    const totalExpense = filteredData.reduce(
-      (total: number, transaction: Transaction) => {
-        if (transaction.transaction_type === "withdraw") {
-          return total + Number(transaction.amount / 100);
-        }
-        return total;
-      },
-      0
-    );
+    for (const transaction of filteredData) {
+      const { amount, transaction_type, state, date } = transaction;
+      const amountValue = Number(amount) / 100;
 
-    const totalAmount = totalIncome - totalExpense;
+      if (transaction_type === "deposit") totalIncome += amountValue;
+      else if (transaction_type === "withdraw") totalExpense += amountValue;
 
-    const groupedByState = filteredData.reduce(
-      (acc: any, transaction: Transaction) => {
-        const { state, transaction_type, amount } = transaction;
-        const stateIndex = acc.findIndex((s: any) => s.name === state);
-        if (stateIndex === -1) {
-          acc.push({ name: state, [transaction_type]: Number(amount / 100) });
-        } else {
-          acc[stateIndex][transaction_type] += Number(amount / 100);
-        }
-        return acc;
-      },
-      []
-    );
+      if (!groupedByState[state]) {
+        groupedByState[state] = { name: state, deposit: 0, withdraw: 0 };
+      }
+      groupedByState[state][transaction_type] += amountValue;
 
-    const groupedByDate = filteredData.reduce(
-      (acc: any, transaction: Transaction) => {
-        const { date, transaction_type, amount } = transaction;
+      const formattedDate = new Date(date).toLocaleDateString("pt-BR", {
+        month: "2-digit",
+        year: "numeric",
+      });
 
-        const formattedDate = new Date(date).toLocaleDateString("pt-BR", {
-          month: "2-digit",
-          year: "numeric",
-        });
+      if (!groupedByDateMap[formattedDate]) {
+        groupedByDateMap[formattedDate] = {
+          name: formattedDate,
+          deposit: 0,
+          withdraw: 0,
+        };
+      }
+      groupedByDateMap[formattedDate][transaction_type] += amountValue;
+    }
 
-        const existingIndex = acc.findIndex(
-          (item: any) => item.name === formattedDate
+    const groupedByStateArr = Object.values(groupedByState);
+
+    const groupedByDateArr = Object.values(groupedByDateMap).sort(
+      (a: any, b: any) => {
+        const [monthA, yearA] = a.name.split("/").map(Number);
+        const [monthB, yearB] = b.name.split("/").map(Number);
+        return (
+          new Date(yearA, monthA - 1).getTime() -
+          new Date(yearB, monthB - 1).getTime()
         );
-
-        if (existingIndex === -1) {
-          acc.push({
-            name: formattedDate,
-            deposit: transaction_type === "deposit" ? Number(amount / 100) : 0,
-            withdraw:
-              transaction_type === "withdraw" ? Number(amount / 100) : 0,
-          });
-        } else {
-          acc[existingIndex][transaction_type] =
-            (acc[existingIndex][transaction_type] || 0) + Number(amount / 100);
-        }
-
-        return acc;
-      },
-      []
+      }
     );
 
-    groupedByDate.sort((a: any, b: any) => {
-      const [monthA, yearA] = a.name.split("/").map(Number);
-      const [monthB, yearB] = b.name.split("/").map(Number);
-
-      const dateA = new Date(yearA, monthA - 1);
-      const dateB = new Date(yearB, monthB - 1);
-
-      return dateA.getTime() - dateB.getTime();
-    });
-
-    groupedByDate.forEach((item: any) => {
+    groupedByDateArr.forEach((item: any) => {
       item.balance = (item.deposit || 0) - (item.withdraw || 0);
     });
+
+    const totalAmount = totalIncome - totalExpense;
 
     return Response.json({
       totalIncome,
       totalExpense,
       totalAmount,
-      groupedByState,
-      groupedByDate,
+      groupedByState: groupedByStateArr,
+      groupedByDate: groupedByDateArr,
     });
   } catch (error) {
+    console.error("API Error:", error);
     return new Response("Internal Server Error", { status: 500 });
   }
 }
