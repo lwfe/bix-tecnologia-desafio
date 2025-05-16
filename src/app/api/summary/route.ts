@@ -1,15 +1,52 @@
 import fs from "fs";
 import path from "path";
 import { Transaction } from "@/types";
+import { NextRequest } from "next/server";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const filters = request.nextUrl.searchParams;
   const filePath = path.join(process.cwd(), "mocks", "transactions.json");
 
   try {
     const rawData = fs.readFileSync(filePath, "utf-8");
-    const allData = JSON.parse(rawData);
+    const allData: Transaction[] = JSON.parse(rawData);
 
-    const totalIncome = allData.reduce(
+    const initialDateParam = filters.get("initialDate");
+    const finalDateParam = filters.get("finalDate");
+    const accountFilter = filters.get("account");
+    const industryFilter = filters.get("industry");
+    const stateFilter = filters.get("state");
+
+    const initialDate = initialDateParam
+      ? new Date(Number(initialDateParam))
+      : null;
+    const finalDate = finalDateParam ? new Date(Number(finalDateParam)) : null;
+
+    let filteredData = allData.filter((transaction) => {
+      const transactionDate = new Date(transaction.date);
+
+      const matchesDateRange =
+        (!initialDate || transactionDate >= initialDate) &&
+        (!finalDate || transactionDate <= finalDate);
+
+      const matchesAccount = accountFilter
+        ? transaction.account === accountFilter
+        : true;
+
+      const matchesIndustry = industryFilter
+        ? transaction.industry === industryFilter
+        : true;
+
+      const matchesState = stateFilter
+        ? transaction.state === stateFilter
+        : true;
+
+      return (
+        matchesDateRange && matchesAccount && matchesIndustry && matchesState
+      );
+    });
+
+    const totalIncome = filteredData.reduce(
       (total: number, transaction: Transaction) => {
         if (transaction.transaction_type === "deposit") {
           return total + Number(transaction.amount / 100);
@@ -19,7 +56,7 @@ export async function GET() {
       0
     );
 
-    const totalExpense = allData.reduce(
+    const totalExpense = filteredData.reduce(
       (total: number, transaction: Transaction) => {
         if (transaction.transaction_type === "withdraw") {
           return total + Number(transaction.amount / 100);
@@ -31,7 +68,7 @@ export async function GET() {
 
     const totalAmount = totalIncome - totalExpense;
 
-    const groupedByState = allData.reduce(
+    const groupedByState = filteredData.reduce(
       (acc: any, transaction: Transaction) => {
         const { state, transaction_type, amount } = transaction;
         const stateIndex = acc.findIndex((s: any) => s.name === state);
@@ -45,7 +82,7 @@ export async function GET() {
       []
     );
 
-    const groupedByDate = allData.reduce(
+    const groupedByDate = filteredData.reduce(
       (acc: any, transaction: Transaction) => {
         const { date, transaction_type, amount } = transaction;
 
@@ -61,7 +98,9 @@ export async function GET() {
         if (existingIndex === -1) {
           acc.push({
             name: formattedDate,
-            [transaction_type]: Number(amount / 100),
+            deposit: transaction_type === "deposit" ? Number(amount / 100) : 0,
+            withdraw:
+              transaction_type === "withdraw" ? Number(amount / 100) : 0,
           });
         } else {
           acc[existingIndex][transaction_type] =
@@ -81,6 +120,10 @@ export async function GET() {
       const dateB = new Date(yearB, monthB - 1);
 
       return dateA.getTime() - dateB.getTime();
+    });
+
+    groupedByDate.forEach((item: any) => {
+      item.balance = (item.deposit || 0) - (item.withdraw || 0);
     });
 
     return Response.json({

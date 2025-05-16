@@ -35,5 +35,6 @@ export interface Summary {
     name: string;
     deposit: number;
     withdraw: number;
+    balance: number;
   }[];
 }

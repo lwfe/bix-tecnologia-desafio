@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import {
   BarChart,
   Bar,
@@ -14,19 +13,13 @@ import {
   Line,
 } from "recharts";
 
-import type { Summary, Transaction } from "@/types";
+import type { Summary } from "@/types";
 
 import { formatCurrency } from "@/utils/formatters";
-import {
-  groupTransactionsByMonth,
-  groupTransactionsByCategory,
-} from "@/utils/chart-utils";
 
 import {
-  ChartButton,
   ChartCard,
   ChartContent,
-  ChartControls,
   ChartHeader,
   ChartsContainer,
   ChartTitle,
@@ -41,8 +34,6 @@ export function TransactionCharts({
   dateData,
   stateData,
 }: TransactionChartsProps) {
-  const [timeRange, setTimeRange] = useState<"3m" | "6m" | "1y">("6m");
-
   return (
     <ChartsContainer>
       <ChartCard>
@@ -57,20 +48,20 @@ export function TransactionCharts({
             >
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" />
-              <YAxis tickFormatter={(value) => `R$${value * 1000}k`} />
+              <YAxis tickFormatter={(value) => `R$${value / 1000}k`} />
               <Tooltip
-                formatter={(value) => formatCurrency(Number(value / 1000))}
+                formatter={(value) => formatCurrency(Number(value))}
                 labelFormatter={(label) => `Estado: ${label}`}
               />
               <Legend />
               <Bar
-                dataKey="income"
+                dataKey="deposit"
                 stackId="a"
                 name="Receitas"
                 fill="#10b981"
               />
               <Bar
-                dataKey="expense"
+                dataKey="withdraw"
                 stackId="a"
                 name="Despesas"
                 fill="#ef4444"
@@ -83,26 +74,6 @@ export function TransactionCharts({
       <ChartCard>
         <ChartHeader>
           <ChartTitle>Fluxo de Caixa</ChartTitle>
-          <ChartControls>
-            <ChartButton
-              active={timeRange === "3m"}
-              onClick={() => setTimeRange("3m")}
-            >
-              3 meses
-            </ChartButton>
-            <ChartButton
-              active={timeRange === "6m"}
-              onClick={() => setTimeRange("6m")}
-            >
-              6 meses
-            </ChartButton>
-            <ChartButton
-              active={timeRange === "1y"}
-              onClick={() => setTimeRange("1y")}
-            >
-              1 ano
-            </ChartButton>
-          </ChartControls>
         </ChartHeader>
         <ChartContent>
           <ResponsiveContainer width="100%" height="100%">
@@ -111,7 +82,7 @@ export function TransactionCharts({
               margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
             >
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
+              <XAxis dataKey="name" />
               <YAxis tickFormatter={(value) => `R$${value / 1000}k`} />
               <Tooltip
                 formatter={(value) => formatCurrency(Number(value))}
@@ -120,14 +91,14 @@ export function TransactionCharts({
               <Legend />
               <Line
                 type="monotone"
-                dataKey="income"
+                dataKey="deposit"
                 name="Receitas"
                 stroke="#10b981"
                 activeDot={{ r: 8 }}
               />
               <Line
                 type="monotone"
-                dataKey="expense"
+                dataKey="withdraw"
                 name="Despesas"
                 stroke="#ef4444"
               />

@@ -53,22 +53,10 @@ const StatusBadge = styled.span<{ status: string }>`
   font-weight: 500;
 
   ${({ status }) => {
-    if (status === "completed") {
-      return `
+    return `
         background-color: #d1fae5;
         color: #065f46;
       `;
-    } else if (status === "pending") {
-      return `
-        background-color: #fef3c7;
-        color: #92400e;
-      `;
-    } else {
-      return `
-        background-color: #fee2e2;
-        color: #b91c1c;
-      `;
-    }
   }}
 `;
 
@@ -82,7 +70,7 @@ const TypeIcon = styled.span<{ type: string }>`
   margin-right: 0.5rem;
 
   ${({ type }) => {
-    if (type === "income") {
+    if (type === "deposit") {
       return `
         background-color: #d1fae5;
         color: #10b981;
@@ -97,7 +85,7 @@ const TypeIcon = styled.span<{ type: string }>`
 `;
 
 const AmountCell = styled.span<{ type: string }>`
-  color: ${({ type }) => (type === "income" ? "#10b981" : "#ef4444")};
+  color: ${({ type }) => (type === "deposit" ? "#10b981" : "#ef4444")};
   font-weight: 500;
 `;
 

@@ -1,12 +1,6 @@
 "use client";
 import { useState } from "react";
-import {
-  ArrowDown,
-  ArrowUp,
-  ChevronLeft,
-  ChevronRight,
-  Clock,
-} from "lucide-react";
+import { ArrowDown, ArrowUp, ChevronLeft, ChevronRight } from "lucide-react";
 
 import type { Transaction } from "@/types";
 
@@ -33,9 +27,7 @@ interface TransactionTableProps {
   transactions: Transaction[];
 }
 
-export function TransactionTable({
-  transactions,
-}: TransactionTableProps) {
+export function TransactionTable({ transactions }: TransactionTableProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
@@ -72,7 +64,7 @@ export function TransactionTable({
             <thead>
               <tr>
                 <Th>Descrição</Th>
-                <Th>Categoria</Th>
+                <Th>Conta</Th>
                 <Th>Data</Th>
                 <Th>Valor</Th>
                 <Th>Status</Th>
@@ -80,37 +72,30 @@ export function TransactionTable({
             </thead>
             <tbody>
               {currentTransactions.map((transaction) => (
-                <tr key={transaction.id}>
+                <tr key={transaction.amount}>
                   <Td>
                     <div style={{ display: "flex", alignItems: "center" }}>
-                      <TypeIcon type={transaction.type}>
-                        {transaction.type === "income" ? (
+                      <TypeIcon type={transaction.transaction_type}>
+                        {transaction.transaction_type === "deposit" ? (
                           <ArrowUp size={12} />
                         ) : (
                           <ArrowDown size={12} />
                         )}
                       </TypeIcon>
-                      {transaction.description}
+                      {transaction.industry}
                     </div>
                   </Td>
-                  <Td>{transaction.category}</Td>
+                  <Td>{transaction.account}</Td>
                   <Td>{formatDate(transaction.date)}</Td>
                   <Td>
-                    <AmountCell type={transaction.type}>
-                      {transaction.type === "income" ? "+" : "-"}
-                      {formatCurrency(transaction.amount)}
+                    <AmountCell type={transaction.transaction_type}>
+                      {transaction.transaction_type === "deposit" ? "+" : "-"}
+                      {formatCurrency(transaction.amount / 100)}
                     </AmountCell>
                   </Td>
                   <Td>
-                    <StatusBadge status={transaction.status}>
-                      {transaction.status === "pending" && (
-                        <Clock size={12} style={{ marginRight: "4px" }} />
-                      )}
-                      {transaction.status === "completed"
-                        ? "Concluído"
-                        : transaction.status === "pending"
-                        ? "Pendente"
-                        : "Cancelado"}
+                    <StatusBadge status={transaction.transaction_type}>
+                      Concluído
                     </StatusBadge>
                   </Td>
                 </tr>

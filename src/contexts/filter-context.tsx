@@ -14,10 +14,12 @@ export interface Filters {
   account: string;
   industry: string;
   state: string;
+  page: string;
 }
 
 interface FilterContextType {
   filters: Filters;
+  queryStringFilters: string;
   setFilters: (filters: Filters) => void;
 }
 
@@ -33,6 +35,7 @@ export function FilterProvider({ children }: { children: ReactNode }) {
     account: "",
     industry: "",
     state: "",
+    page: "1",
   });
 
   useEffect(() => {
@@ -56,8 +59,17 @@ export function FilterProvider({ children }: { children: ReactNode }) {
     });
   };
 
+  const queryStringFilters = new URLSearchParams(
+    Object.entries(filters).reduce((acc: any, [key, value]) => {
+      if (value !== undefined && value !== null && value !== "") {
+        acc[key] = String(value);
+      }
+      return acc;
+    }, {})
+  ).toString();
+
   return (
-    <FilterContext.Provider value={{ filters, setFilters }}>
+    <FilterContext.Provider value={{ filters, queryStringFilters, setFilters }}>
       {children}
     </FilterContext.Provider>
   );

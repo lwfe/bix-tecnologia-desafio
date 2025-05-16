@@ -21,17 +21,17 @@ import {
 } from "./styles";
 
 export default function DashboardPage() {
-  const { filters } = useFilter();
+  const { filters, queryStringFilters } = useFilter();
   const [filteredTransactions, setFilteredTransactions] = useState<
     Transaction[]
   >([]);
   const [summary, setSummary] = useState<Summary | null>(null);
 
   useEffect(() => {
-    fetch("/api/transactions")
+    fetch("/api/transactions?" + queryStringFilters, { cache: "force-cache" })
       .then((res) => res.json())
       .then((data) => setFilteredTransactions(data.data));
-    fetch("/api/summary")
+    fetch("/api/summary?" + queryStringFilters, { cache: "force-cache" })
       .then((res) => res.json())
       .then((data) => setSummary(data));
   }, [filters]);
