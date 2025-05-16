@@ -14,7 +14,6 @@ export interface Filters {
   account: string;
   industry: string;
   state: string;
-  page: string;
 }
 
 interface FilterContextType {
@@ -35,7 +34,6 @@ export function FilterProvider({ children }: { children: ReactNode }) {
     account: "",
     industry: "",
     state: "",
-    page: "1",
   });
 
   useEffect(() => {

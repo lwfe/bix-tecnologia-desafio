@@ -11,23 +11,23 @@ export async function GET(request: NextRequest) {
     const rawData = fs.readFileSync(filePath, "utf-8");
     const allData: Transaction[] = JSON.parse(rawData);
 
-    const initialDateParam = filters.get("initialDate");
-    const finalDateParam = filters.get("finalDate");
+    const startDateParam = filters.get("startDate");
+    const endDateParam = filters.get("endDate");
     const accountFilter = filters.get("account");
     const industryFilter = filters.get("industry");
     const stateFilter = filters.get("state");
 
-    const initialDate = initialDateParam
-      ? new Date(Number(initialDateParam))
+    const startDate = startDateParam
+      ? new Date(startDateParam).getTime()
       : null;
-    const finalDate = finalDateParam ? new Date(Number(finalDateParam)) : null;
+    const endDate = endDateParam ? new Date(endDateParam).getTime() : null;
 
     let filteredData = allData.filter((transaction) => {
-      const transactionDate = new Date(transaction.date);
+      const transactionDate = new Date(transaction.date).getTime();
 
       const matchesDateRange =
-        (!initialDate || transactionDate >= initialDate) &&
-        (!finalDate || transactionDate <= finalDate);
+        (!startDate || transactionDate >= startDate) &&
+        (!endDate || transactionDate <= endDate);
 
       const matchesAccount = accountFilter
         ? transaction.account === accountFilter

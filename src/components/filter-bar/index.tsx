@@ -29,13 +29,13 @@ export function FilterBar() {
 
   useEffect(() => {
     Promise.all([
-      fetch("/api/states")
+      fetch("/api/states", { cache: "force-cache" })
         .then((res) => res.json())
         .then((data) => setStates(data)),
-      fetch("/api/accounts")
+      fetch("/api/accounts", { cache: "force-cache" })
         .then((res) => res.json())
         .then((data) => setAccounts(data)),
-      fetch("/api/industries")
+      fetch("/api/industries", { cache: "force-cache" })
         .then((res) => res.json())
         .then((data) => setIndustries(data)),
     ]);
